@@ -1,25 +1,34 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import BookList from './components/BookList';
+import BookDetail from './components/BookDetail';
+import MyLibrary from './components/MyLibrary';
 import './App.css';
 
-function App() {
+const App = () => {
+  const [library, setLibrary] = useState([]);
+
+  const addToLibrary = (book) => {
+    if (!library.find(b => b.id === book.id)) {
+      setLibrary([...library, book]);
+    }
+  };
+
+  const removeFromLibrary = (book) => {
+    setLibrary(library.filter(b => b.id !== book.id));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="container">
+        <Routes>
+          <Route path="/" element={<BookList addToLibrary={addToLibrary} />} />
+          <Route path="/book/:id" element={<BookDetail addToLibrary={addToLibrary} />} />
+          <Route path="/mylibrary" element={<MyLibrary library={library} removeFromLibrary={removeFromLibrary} />} />
+        </Routes>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;
